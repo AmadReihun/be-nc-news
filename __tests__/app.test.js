@@ -38,4 +38,29 @@ describe("app", () => {
       })
     });
   });
+
+  describe("GET /api", () => {
+    test("Responds with a status of 200 for the right request.", () => {
+      return request(app).get("/api").expect(200);
+    });
+    test("200 - Responds with an array of topics to the client.", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(typeof(body.endpoint)).toBe('object');
+          // // Checking the data type
+          for (const [key, value] of Object.entries(body.endpoint)) {
+            expect(typeof(`${key}`)).toBe('string');
+            expect(typeof(`${value}`)).toBe('string');
+            expect(typeof(body.endpoint[`${key}`])).toBe('object');
+          }
+        });
+    });
+    test("to get error 404 if the path is wrong", () => {
+      return request(app)
+        .get("/wrongpath")
+        .expect(404)
+    })
+  });
 }); 
