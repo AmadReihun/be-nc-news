@@ -24,7 +24,6 @@ describe("app", () => {
           .expect(200)
           .then(({ body }) => {
             const topics = body.topics;
-            // console.log(body);
             expect(Object.keys(topics[0]).length).toBe(2);
             expect(topics).toHaveLength(3);
             // Checking the data type
@@ -68,7 +67,7 @@ describe("app", () => {
           const paredEndpoint = JSON.parse(fileContents);
           
           expect(paredEndpoint).toEqual(body.endpoint)
-  })
+        })
         });
     });
     test("to get error 404 if the path is wrong", () => {
@@ -76,5 +75,32 @@ describe("app", () => {
         .get("/wrongpath")
         .expect(404)
     })
+  });
+
+  describe("GET /api/articles", () => {
+    test.only("Responds with a status of 200 for the right request.", () => {
+      return request(app).get("/api/articles/1").expect(200);
+    });
+    // test("200 - Responds with an array of topics to the client.", () => {
+    //   return request(app)
+    //     .get("/api/articles/1")
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //       const topics = body.topics;
+    //       // console.log(body);
+    //       expect(Object.keys(topics[0]).length).toBe(2);
+    //       expect(topics).toHaveLength(3);
+    //       // Checking the data type
+    //       topics.forEach((topic) => {
+    //         expect(typeof topic.slug).toBe("string");
+    //         expect(typeof topic.description).toBe("string");
+    //       });
+    //     });
+    // });
+    // test("to get error 404 if the path is wrong", () => {
+    //   return request(app)
+    //     .get("/api/articles/1")
+    //     .expect(404)
+    // })
   });
 }); 
