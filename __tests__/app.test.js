@@ -4,6 +4,9 @@ const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data/index.js");
 require("jest-sorted");
+const fs = require("fs/promises")
+const endpoint = require("../endpoints.json")
+
 
 afterAll(() => db.end());
 
@@ -39,7 +42,7 @@ describe("app", () => {
     });
   });
 
-  describe("GET /api", () => {
+  describe("GET /api to show the endpoint", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api").expect(200);
     });
@@ -48,13 +51,24 @@ describe("app", () => {
         .get("/api")
         .expect(200)
         .then(({ body }) => {
+
           expect(typeof(body.endpoint)).toBe('object');
+
           // // Checking the data type
+
           for (const [key, value] of Object.entries(body.endpoint)) {
-            expect(typeof(`${key}`)).toBe('string');
-            expect(typeof(`${value}`)).toBe('string');
-            expect(typeof(body.endpoint[`${key}`])).toBe('object');
+            expect(typeof(key)).toBe('string');
+            expect(typeof(value)).toBe('object');
           }
+
+          // check if the returned body is similar to the JSON file
+
+          fs.readFile("/home/amad7/northcoders/backend/be-nc-news/endpoints.json", "utf-8")
+          .then((fileContents) => {
+          const paredEndpoint = JSON.parse(fileContents);
+          
+          expect(paredEndpoint).toEqual(body.endpoint)
+  })
         });
     });
     test("to get error 404 if the path is wrong", () => {
