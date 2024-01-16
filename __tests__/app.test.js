@@ -79,7 +79,7 @@ describe("app", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api/articles/1").expect(200);
     });
-    test.only("200 - Responds with the requested article_id to the client.", () => {
+    test("200 - Responds with the requested article_id to the client.", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
