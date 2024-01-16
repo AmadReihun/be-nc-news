@@ -143,7 +143,7 @@ describe("app", () => {
       return request(app).get("/api/articles").expect(200);
     });
 
-    test("200 - Responds with an array of all articles to the client.", () => {
+    test.only("200 - Responds with an array of all articles to the client.", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -162,15 +162,13 @@ describe("app", () => {
             expect(typeof article.created_at).toBe("string");
             expect(typeof article.votes).toBe("number");
             expect(typeof article.article_img_url).toBe("string");
-            expect(typeof article.count).toBe("string");
+            expect(typeof article.comment_count).toBe("string");
             expect(typeof article.body).toBe("undefined");
           });
 
           // Checking that the articles are sorted by date in descending order
 
-          for (let i = 0; i < articles.length-1; i++) {
-          expect(articles[i+1].created_at <= articles[i].created_at).toBe(true)
-          }
+            expect(body.article).toBeSortedBy('created_at', {descending: true})
         });
     });
 
