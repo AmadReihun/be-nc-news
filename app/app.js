@@ -1,14 +1,16 @@
 const express = require("express");
-const { getTopics, getApi } = require("./controllers/ncTopics.controllers");
-const { handle400s, handle500s} = require("./errorHandlers");
+const { getTopics, getApi, getArticleById } = require("./controllers/ncNews.controllers");
+const { psqlErrorHandler, customErrorHandler, serverErrorHandler} = require("./errorHandlers");
 
 const app = express();
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api", getApi)
+app.get("/api/articles/:article_id", getArticleById)
 
-app.use(handle400s);
-app.use(handle500s);
+app.use(psqlErrorHandler);
+app.use(customErrorHandler);
+app.use(serverErrorHandler);
 
 module.exports = { app };
