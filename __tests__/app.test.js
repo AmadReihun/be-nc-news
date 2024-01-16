@@ -126,4 +126,47 @@ describe("app", () => {
         })
     });
   });
+
+  describe("GET /api/articles", () => {
+    test("Responds with a status of 200 for the right request.", () => {
+      return request(app).get("/api/articles").expect(200);
+    });
+
+    test("200 - Responds with an array of all articles to the client.", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.article;
+
+          expect(Object.keys(articles[0]).length).toBe(8);
+          
+          // Checking the data types && not to have body property
+          
+          articles.forEach((article) => {
+            expect(typeof article.author).toBe("string");
+            expect(typeof article.title).toBe("string");
+            expect(typeof article.article_id).toBe("number");
+            expect(typeof article.topic).toBe("string");
+            expect(typeof article.created_at).toBe("string");
+            expect(typeof article.votes).toBe("number");
+            expect(typeof article.article_img_url).toBe("string");
+            expect(typeof article.count).toBe("string");
+            expect(typeof article.body).toBe("undefined");
+          });
+
+          // Checking that the articles are sorted by date in descending order
+
+          for (let i = 0; i < articles.length-1; i++) {
+          expect(articles[i+1].created_at <= articles[i].created_at).toBe(true)
+          }
+        });
+    });
+
+    test("to get error 404 if the path is wrong", () => {
+      return request(app)
+        .get("/api/wrongpath")
+        .expect(404)
+    });
+  });
 }); 
