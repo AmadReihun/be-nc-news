@@ -5,7 +5,8 @@ const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data/index.js");
 require("jest-sorted");
 const fs = require("fs/promises")
-const JSONendpoint = require("../endpoints.json")
+const JSONendpoint = require("../endpoints.json");
+const articles = require("../db/data/test-data/articles.js");
 
 
 afterAll(() => db.end());
@@ -45,7 +46,7 @@ describe("app", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api").expect(200);
     });
-    test("200 - Responds with an array of topics to the client.", () => {
+    test("200 - Responds with an array of endpoints to the client.", () => {
       return request(app)
         .get("/api")
         .expect(200)
@@ -74,11 +75,11 @@ describe("app", () => {
     })
   });
 
-  describe("GET /api/articles", () => {
+  describe("GET /api/articles/:article_id", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api/articles/1").expect(200);
     });
-    test("200 - Responds with an array of topics to the client.", () => {
+    test.only("200 - Responds with the requested article_id to the client.", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -97,7 +98,17 @@ describe("app", () => {
             expect(typeof article.votes).toBe("number");
             expect(typeof article.article_img_url).toBe("string");
           });
+          // Checking the accuracy of the data for article_id 1
+          expect(articles[0].article_id).toBe(1);
+          expect(articles[0].title).toBe('Living in the shadow of a great man');
+          expect(articles[0].topic).toBe('mitch');
+          expect(articles[0].author).toBe('butter_bridge');
+          expect(articles[0].body).toBe('I find this existence challenging');
+          expect(articles[0].created_at).toBe('2020-07-09T20:11:00.000Z');
+          expect(articles[0].votes).toBe(100);
+          expect(articles[0].article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700');
         });
+          
     });
 
     test("to get error 404 if the path is wrong", () => {
