@@ -5,7 +5,7 @@ const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data/index.js");
 require("jest-sorted");
 const fs = require("fs/promises")
-const endpoint = require("../endpoints.json")
+const JSONendpoint = require("../endpoints.json")
 
 
 afterAll(() => db.end());
@@ -62,12 +62,8 @@ describe("app", () => {
 
           // check if the returned body is similar to the JSON file
           
-          fs.readFile("/home/amad7/northcoders/backend/be-nc-news/endpoints.json", "utf-8")
-          .then((fileContents) => {
-          const paredEndpoint = JSON.parse(fileContents);
-          
-          expect(paredEndpoint).toEqual(body.endpoint)
-        })
+          expect(JSONendpoint).toEqual(body.endpoint)
+        
         });
     });
 
