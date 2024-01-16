@@ -181,3 +181,71 @@ describe("app", () => {
     });
   });
 }); 
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("Responds with a status of 200 for the right request.", () => {
+    return request(app).get("/api/articles/1/comments").expect(200);
+  });
+  test("200 - Responds with the requested article_id to the client.", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.article;
+        expect(Object.keys(comments[0]).length).toBe(6);
+        expect(comments).toHaveLength(11);
+
+        // Checking the data type
+
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+        });
+
+        // Checking the accuracy of the data for article_id 1
+
+        expect(comments[0].comment_id).toBe(5);
+        expect(comments[0].body).toBe('I hate streaming noses');
+        expect(comments[0].article_id).toBe(1);
+        expect(comments[0].author).toBe('icellusedkars');
+        expect(comments[0].votes).toBe(0);
+        expect(comments[0].created_at).toBe('2020-11-03T21:00:00.000Z');
+
+        // Checking that the comments are sorted by date in descending order
+
+        expect(body.article).toBeSortedBy('created_at', {descending: true})
+        
+      }); 
+  });
+
+  test("to get error 404 if the path is wrong", () => {
+    return request(app)
+      .get("/api/wrongpath/1/comments")
+      .expect(404)
+    
+  });
+
+  test("to get error 404 and respond with appropriate message when given valid but non-existent article_id", () => {
+    return request(app)
+      .get("/api/articles/100/comments")
+      .expect(404)
+      .then(({body}) => {
+        const message = body.msg;
+        expect(message).toBe("Not Found")
+      })
+  });
+
+  test("to get error 400 and respond with appropriate message when given invalid and bad type article_id", () => {
+    return request(app)
+      .get("/api/articles/apple/comments")
+      .expect(400)
+      .then(({body}) => {
+        const message = body.msg;
+        expect(message).toBe("Bad Request")
+      })
+  });
+});
