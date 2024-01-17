@@ -50,7 +50,6 @@ exports.fetchArticles = () => {
     });
 }
 
-
 exports.fetchCommentsbyArticleId = (article_id) => {
   return db
     .query(
@@ -63,8 +62,6 @@ exports.fetchCommentsbyArticleId = (article_id) => {
       return rows;
     });
 }
-
-
 
 exports.insertCommentByArticleId = (newComment, article_id) => {
   return db

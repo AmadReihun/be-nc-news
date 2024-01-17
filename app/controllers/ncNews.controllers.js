@@ -56,12 +56,9 @@ exports.getCommentsbyArticleId = (req, res, next) => {
 }
 
 
-
 exports.createCommentByArticleId = (req, res, next)  => {
-
   const { article_id } = req.params;
   const newComment = req.body;
-
   insertCommentByArticleId(newComment, article_id).then((postedComment) => {
     res.status(201).send({ comment: postedComment });
   })

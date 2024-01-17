@@ -143,7 +143,7 @@ describe("app", () => {
       return request(app).get("/api/articles").expect(200);
     });
 
-    test.only("200 - Responds with an array of all articles to the client.", () => {
+    test("200 - Responds with an array of all articles to the client.", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -248,6 +248,7 @@ describe("app", () => {
   });
 
   describe("POST /api/articles/:article_id/comments", () => {
+    
     test("Responds with a status of 201 for the right request.", () => {
       return request(app).post("/api/articles/1/comments").send({
         username: 'butter_bridge',
@@ -255,6 +256,7 @@ describe("app", () => {
       })
         .expect(201);
     });
+
     test("returns newly created object", () => {
       return request(app).post("/api/articles/1/comments").send({
         username: 'butter_bridge',
@@ -264,41 +266,49 @@ describe("app", () => {
         .then((response) => {
           expect(response.body.comment).toBe("new comment");
         });
-
     });
-
-    // if wrong username which is not in users table 23503
 
     test("to get error 404 if the path is wrong", () => {
       return request(app)
         .post("/api/wrongpath/1/comments")
         .expect(404)
-      
     });
   
-    // test.only("to get error 404 and respond with appropriate message when given valid but non-existent article_id", () => {
-    //   return request(app)
-    //     .post("/api/articles/100/comments")
-    //     .send({
-    //       username: 'butter_bridge',
-    //       body: "new comment"})
-    //     .expect(404)
-    //     .then(({body}) => {
-    //       const message = body.msg;
-    //       expect(message).toBe("Not Found")
-    //     })
-    // });
-  
-    // test("to get error 400 and respond with appropriate message when given invalid and bad type article_id", () => {
-    //   return request(app)
-    //     .get("/api/articles/apple/comments")
-    //     .expect(400)
-    //     .then(({body}) => {
-    //       const message = body.msg;
-    //       expect(message).toBe("Bad Request")
-    //     })
-    // });
-    
+    test("to get error 404 and respond with appropriate message when given valid but non-existent article_id which will get 23503", () => {
+      return request(app)
+        .post("/api/articles/150/comments")
+        .send({
+          username: 'butter_bridge',
+          body: "new comment"})
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 404 and respond with appropriate message when given valid but non-existent username input in users database which will get 23503", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+          username: 'whatever username',
+          body: "new comment"})
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 400 and respond with appropriate message when given invalid and bad type article_id which will get 22P02", () => {
+      return request(app)
+        .get("/api/articles/apple/comments")
+        .expect(400)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request")
+        })
+    });
   });
 
 }); 
