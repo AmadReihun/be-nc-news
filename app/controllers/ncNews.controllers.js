@@ -1,4 +1,4 @@
-const { fetchTopics, fetchApi, fetchArticleById, fetchArticles, fetchCommentsbyArticleId, insertCommentByArticleId, modifyArticleByArticleId} = require("../models/ncNews.models")
+const { fetchTopics, fetchApi, fetchArticleById, fetchArticles, fetchCommentsbyArticleId, insertCommentByArticleId, modifyArticleByArticleId, removeCommentById} = require("../models/ncNews.models")
 
 const { checkIdExists } = require("../utils")
 
@@ -81,6 +81,17 @@ exports.updateArticleByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   modifyArticleByArticleId(article_id, inc_votes).then((updatedArticle) => {
     res.status(200).send({ updatedArticle });
+  })
+  .catch((err) => {
+    next(err);
+  })
+};
+
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentById(comment_id).then((rowCount) => {
+    res.status(204).send(); 
   })
   .catch((err) => {
     next(err);

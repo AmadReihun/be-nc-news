@@ -1,5 +1,5 @@
 const express = require("express");
-const { getTopics, getApi, getArticleById, getArticles, getCommentsbyArticleId, createCommentByArticleId, updateArticleByArticleId } = require("./controllers/ncNews.controllers");
+const { getTopics, getApi, getArticleById, getArticles, getCommentsbyArticleId, createCommentByArticleId, updateArticleByArticleId, deleteCommentById} = require("./controllers/ncNews.controllers");
 const { psqlErrorHandler, customErrorHandler, serverErrorHandler} = require("./errorHandlers");
 
 const app = express();
@@ -14,6 +14,8 @@ app.get("/api/articles/:article_id/comments", getCommentsbyArticleId)
 app.post("/api/articles/:article_id/comments", createCommentByArticleId)
 
 app.patch("/api/articles/:article_id",updateArticleByArticleId)
+
+app.delete("/api/comments/:comment_id",deleteCommentById)
 
 app.use(psqlErrorHandler);
 app.use(customErrorHandler);
