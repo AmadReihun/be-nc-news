@@ -183,12 +183,15 @@ describe("app", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api/articles/1/comments").expect(200);
     });
-    test("200 - Responds with the requested article_id to the client.", () => {
+
+    test("200 - Responds with the comment that belongs to the requested article_id.", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({ body }) => {
+          
           const comments = body.article;
+
           expect(Object.keys(comments[0]).length).toBe(6);
           expect(comments).toHaveLength(11);
   
@@ -215,6 +218,18 @@ describe("app", () => {
           // Checking that the comments are sorted by date in descending order
   
           expect(body.article).toBeSortedBy('created_at', {descending: true})
+        }); 
+    });
+
+    test("200 - Responds with empty array when there is no comment for that id but id exists e.g id 2.", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          
+          const comments = body.article;
+
+          expect(comments.length).toBe(0);
           
         }); 
     });
@@ -232,7 +247,7 @@ describe("app", () => {
         .expect(404)
         .then(({body}) => {
           const message = body.msg;
-          expect(message).toBe("Not Found")
+          expect(message).toBe("article_id not found")
         })
     });
   
