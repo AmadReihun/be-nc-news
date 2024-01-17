@@ -444,14 +444,14 @@ describe("app", () => {
         })
     });
 
-    test("to get error 404 and respond with appropriate message when not giving any input at all", () => {
+    test("to get error 400 and respond with appropriate message when not giving any input at all", () => {
       return request(app)
-        .patch("/api/articles/150")
+        .patch("/api/articles/1")
         
-        .expect(404)
+        .expect(400)
         .then(({body}) => {
           const message = body.msg;
-          expect(message).toBe("Not Found")
+          expect(message).toBe("Bad Request")
         })
     });
 
@@ -478,7 +478,47 @@ describe("app", () => {
     });
   });
 
-  
+
+
+
+
+
+  describe("DELETE /api/comments/:comment_id", () => {
+    
+    test("status code: 204 and no content message after deletion of existing comment id", () => {
+      return request(app).delete('/api/comments/18').expect(204)
+      .then((body) => {
+        expect(body.res.statusMessage).toBe('No Content')
+      })
+    });
+
+    test("returns 404 error when calling delete method twice on the same id", () => {
+      return request(app).delete('/api/comments/18')
+      .then(() => {
+        return request(app).delete('/api/comments/18').expect(404)
+        .then((body) => {
+          expect(body.res.statusMessage).toBe('Not Found')
+        })
+      });
+    });
+
+    test("returns 404 and appropriate message after deletion of non-existing comment id", () => {
+      return request(app).delete('/api/comments/20').expect(404)
+      .then((body) => {
+        expect(body.res.statusMessage).toBe('Not Found')
+      })
+    });
+
+    test("to get error 400 and respond with appropriate message when given invalid and bad type id", () => {
+      return request(app)
+      .delete('/api/comments/apple')
+        .expect(400)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request")
+        })
+    });
+  });
 
 
 }); 
