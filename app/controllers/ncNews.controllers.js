@@ -1,4 +1,4 @@
-const { fetchTopics, fetchApi, fetchArticleById, fetchArticles, fetchCommentsbyArticleId, insertCommentByArticleId} = require("../models/ncNews.models")
+const { fetchTopics, fetchApi, fetchArticleById, fetchArticles, fetchCommentsbyArticleId, insertCommentByArticleId, modifyArticleByArticleId} = require("../models/ncNews.models")
 
 
 exports.getTopics = (req, res, next) => {
@@ -61,6 +61,18 @@ exports.createCommentByArticleId = (req, res, next)  => {
   const newComment = req.body;
   insertCommentByArticleId(newComment, article_id).then((postedComment) => {
     res.status(201).send({ comment: postedComment });
+  })
+  .catch((err) => {
+    next(err);
+  })
+};
+
+
+exports.updateArticleByArticleId = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+  modifyArticleByArticleId(article_id, inc_votes).then((updatedArticle) => {
+    res.status(200).send({ updatedArticle });
   })
   .catch((err) => {
     next(err);
