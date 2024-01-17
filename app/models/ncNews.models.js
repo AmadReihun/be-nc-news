@@ -73,7 +73,7 @@ exports.insertCommentByArticleId = (newComment, article_id) => {
       if (rows.length === 0) {
         return Promise.reject({status: 404, msg: "Not Found"})
       }
-      return rows[0].body;
+      return rows[0];
     });
 }
 

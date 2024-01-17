@@ -204,6 +204,10 @@ describe("app", () => {
             expect(typeof comment.author).toBe("string");
             expect(typeof comment.votes).toBe("number");
             expect(typeof comment.created_at).toBe("string");
+
+            // to check if all belongs to id 1
+            
+            expect(comment.article_id).toBe(1)
           });
   
           // Checking the accuracy of the data for article_id 1
@@ -279,7 +283,17 @@ describe("app", () => {
       })
         .expect(201)
         .then((response) => {
-          expect(response.body.comment).toBe("new comment");
+          const newComment = response.body.comment;
+
+          expect(Object.keys(newComment).length).toBe(6)
+
+          // checking the accuracy of the data
+
+          expect(newComment.comment_id).toBe(19);
+          expect(newComment.body).toBe("new comment");
+          expect(newComment.article_id).toBe(1);
+          expect(newComment.author).toBe('butter_bridge');
+          expect(newComment.votes).toBe(0);
         });
     });
 
@@ -318,6 +332,32 @@ describe("app", () => {
     test("to get error 400 and respond with appropriate message when given invalid and bad type article_id", () => {
       return request(app)
         .post("/api/articles/apple/comments")
+        .expect(400)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request")
+        })
+    });
+
+    test("to get error 404 and respond with appropriate message when given wrong type value e.g number instead of a string", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: 6,
+        body: 'new comment' })
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 400 and respond with appropriate message when given wrong key name", () => {
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        usernameeeee: 'butter_bridge',
+        body: "new comment"})
         .expect(400)
         .then(({body}) => {
           const message = body.msg;
@@ -417,7 +457,7 @@ describe("app", () => {
 
     test("to get error 400 and respond with appropriate message when given wrong type value e.g string instead of a number", () => {
       return request(app)
-        .patch("/api/articles/150")
+        .patch("/api/articles/1")
         .send({inc_votes: 'hello'})
         .expect(400)
         .then(({body}) => {
@@ -426,14 +466,14 @@ describe("app", () => {
         })
     });
 
-    test("to get error 404 and respond with appropriate message when given wrong key name", () => {
+    test("to get error 400 and respond with appropriate message when given wrong key name", () => {
       return request(app)
-        .patch("/api/articles/150")
+        .patch("/api/articles/1")
         .send({votessss : 20})
-        .expect(404)
+        .expect(400)
         .then(({body}) => {
           const message = body.msg;
-          expect(message).toBe("Not Found")
+          expect(message).toBe("Bad Request")
         })
     });
   });
