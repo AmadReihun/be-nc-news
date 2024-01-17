@@ -149,7 +149,7 @@ describe("app", () => {
         .expect(200)
         .then(({ body }) => {
           const articles = body.article;
-
+          
           expect(Object.keys(articles[0]).length).toBe(8);
           
           // Checking the data types && not to have body property
@@ -274,7 +274,7 @@ describe("app", () => {
         .expect(404)
     });
   
-    test("to get error 404 and respond with appropriate message when given valid but non-existent article_id which will get 23503", () => {
+    test("to get error 404 and respond with appropriate message when given valid but non-existent article_id", () => {
       return request(app)
         .post("/api/articles/150/comments")
         .send({
@@ -287,7 +287,7 @@ describe("app", () => {
         })
     });
 
-    test("to get error 404 and respond with appropriate message when given valid but non-existent username input in users database which will get 23503", () => {
+    test("to get error 404 and respond with appropriate message when given valid but non-existent username input in users database", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({
@@ -300,9 +300,9 @@ describe("app", () => {
         })
     });
 
-    test("to get error 400 and respond with appropriate message when given invalid and bad type article_id which will get 22P02", () => {
+    test("to get error 400 and respond with appropriate message when given invalid and bad type article_id", () => {
       return request(app)
-        .get("/api/articles/apple/comments")
+        .post("/api/articles/apple/comments")
         .expect(400)
         .then(({body}) => {
           const message = body.msg;
@@ -310,6 +310,121 @@ describe("app", () => {
         })
     });
   });
+
+  describe("PATCH /api/articles/:article_id", () => {
+  
+    test("status code: 200 and returns article with the updated votes when the vote input is positive", () => {
+      return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: 300 })
+      .expect(200)
+        .then((response) => {
+
+          expect(Object.keys(response.body).length).toBe(1);
+
+          const {updatedArticle} = response.body;
+
+          // to check the number of the properties
+
+          expect(Object.keys(updatedArticle).length).toBe(8);
+
+          // to check the accuracy of the updatedArticle data
+
+          expect(updatedArticle.votes).toBe(400);
+          expect(updatedArticle.article_id).toBe(1);
+          expect(updatedArticle.title).toBe('Living in the shadow of a great man');
+          expect(updatedArticle.topic).toBe('mitch');
+          expect(updatedArticle.author).toBe('butter_bridge');
+          expect(updatedArticle.body).toBe('I find this existence challenging');
+          expect(updatedArticle.created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(updatedArticle.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700');
+        });
+    });
+
+    test("status code: 200 and returns article with the updated votes when the vote input is negative", () => {
+      return request(app).patch('/api/articles/1')
+      .send({ inc_votes: -50 })
+      .expect(200)
+        .then((response) => {
+          expect(response.body.updatedArticle.votes).toBe(50);
+        });
+    });
+
+    test("to get error 404 if the path is wrong", () => {
+      return request(app)
+        .patch('/api/wrongpath/1')
+        .expect(404)
+    });
+
+    test("to get error 404 and respond with appropriate message when given valid but non-existent article_id", () => {
+      return request(app)
+        .patch("/api/articles/150")
+        .send({ inc_votes: 300 })
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 400 and respond with appropriate message when given invalid and bad type article_id", () => {
+      return request(app)
+      .patch("/api/articles/apple")
+      .send({ inc_votes: 300 })
+        .expect(400)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request")
+        })
+    });
+
+    test("to get error 404 and respond with appropriate message when given empty input", () => {
+      return request(app)
+        .patch("/api/articles/150")
+        .send({})
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 404 and respond with appropriate message when not giving any input at all", () => {
+      return request(app)
+        .patch("/api/articles/150")
+        
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 400 and respond with appropriate message when given wrong type value e.g string instead of a number", () => {
+      return request(app)
+        .patch("/api/articles/150")
+        .send({inc_votes: 'hello'})
+        .expect(400)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request")
+        })
+    });
+
+    test("to get error 404 and respond with appropriate message when given wrong key name", () => {
+      return request(app)
+        .patch("/api/articles/150")
+        .send({votessss : 20})
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+  });
+
+  
+
 
 }); 
 
