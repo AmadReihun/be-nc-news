@@ -50,7 +50,6 @@ exports.fetchArticles = () => {
     });
 }
 
-
 exports.fetchCommentsbyArticleId = (article_id) => {
   return db
     .query(
@@ -61,6 +60,23 @@ exports.fetchCommentsbyArticleId = (article_id) => {
         return Promise.reject({status: 404, msg: "Not Found"})
       }
       return rows;
+    });
+}
+
+exports.insertCommentByArticleId = (newComment, article_id) => {
+  return db
+  .query(`
+  INSERT into comments
+  (author,body,article_id)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *  
+  `, [newComment.username, newComment.body, article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({status: 404, msg: "Not Found"})
+      }
+      return rows[0].body;
     });
 }
 
