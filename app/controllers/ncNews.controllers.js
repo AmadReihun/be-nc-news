@@ -1,6 +1,6 @@
 const { fetchTopics, fetchApi, fetchArticleById, fetchArticles, fetchCommentsbyArticleId, insertCommentByArticleId, modifyArticleByArticleId, removeCommentById, fetchUsers} = require("../models/ncNews.models")
 
-const { checkIdExists } = require("../utils")
+const { checkIdExists, checkTopicExists } = require("../utils")
 
 
 exports.getTopics = (req, res, next) => {
@@ -36,8 +36,20 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
-  .then((article) => {
+  
+  const {topic} = req.query;
+
+  const fetchTopicQuery = fetchArticles(topic);
+  const queries = [fetchTopicQuery];
+
+  if (topic) {
+    const topicIdExistenceQuery = checkTopicExists(topic)
+    queries.push(topicIdExistenceQuery);
+  }
+
+  Promise.all(queries)
+  .then((response) => {
+    const article = response[0];
     res.status(200).send({ article });
   })
   .catch((err) => {
