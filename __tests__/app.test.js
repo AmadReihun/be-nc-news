@@ -187,6 +187,8 @@ describe("app", () => {
         .then(({ body }) => {
           const articles = body.article;
           
+          expect(articles.length).toBe(12);
+
           expect(Object.keys(articles[0]).length).toBe(8);
           
           // Checking to have just the mitch articles after query
@@ -567,7 +569,7 @@ describe("app", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api/users").expect(200);
     });
-    test.only("200 - Responds with an array of users to the client.", () => {
+    test("200 - Responds with an array of users to the client.", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
