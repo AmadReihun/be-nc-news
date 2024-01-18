@@ -520,6 +520,43 @@ describe("app", () => {
     });
   });
 
+  describe("GET /users", () => {
+    test("Responds with a status of 200 for the right request.", () => {
+      return request(app).get("/api/users").expect(200);
+    });
+    test("200 - Responds with an array of users to the client.", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          
+          const users = body.users;
+          
+          expect(Object.keys(users[0]).length).toBe(3);
+          expect(users).toHaveLength(4);
+
+          // Checking the data type
+
+          users.forEach((user) => {
+            expect(typeof user.username).toBe("string");
+            expect(typeof user.name).toBe("string");
+            expect(typeof user.avatar_url).toBe("string");
+          });
+
+          // Checking the accuracy of the data for one of the users
+          
+            expect(users[0].username).toBe("butter_bridge");
+            expect(users[0].name).toBe("jonny");
+            expect(users[0].avatar_url).toBe("https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg");
+
+        });
+    });
+    
+  });
+
+
+
+
 
 }); 
 

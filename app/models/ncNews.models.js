@@ -108,3 +108,14 @@ exports.removeCommentById = (comment_id) => {
     return rowCount;
   });
 };
+
+exports.fetchUsers = () => {
+  return db
+    .query(
+      `
+      SELECT * FROM users`
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+}
