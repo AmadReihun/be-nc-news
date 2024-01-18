@@ -45,11 +45,12 @@ exports.fetchArticles = (topic) => {
   const queryParameters = [];
 
   if (topic) {
-    queryStr += " WHERE topic = $1 GROUP BY articles.article_id ORDER BY created_at DESC"
+    queryStr += " WHERE topic = $1 "
     queryParameters.push(topic)
-  } else {
-    queryStr += " GROUP BY articles.article_id ORDER BY created_at DESC";
-  }
+  } 
+  
+  queryStr += " GROUP BY articles.article_id ORDER BY created_at DESC";
+  
 
     return db.query(queryStr, queryParameters).then(({rows}) => {
       return rows;
