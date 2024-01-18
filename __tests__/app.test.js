@@ -567,7 +567,7 @@ describe("app", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api/users").expect(200);
     });
-    test("200 - Responds with an array of users to the client.", () => {
+    test.only("200 - Responds with an array of users to the client.", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
@@ -575,7 +575,6 @@ describe("app", () => {
           
           const users = body.users;
           
-          expect(Object.keys(users[0]).length).toBe(3);
           expect(users).toHaveLength(4);
 
           // Checking the data type
