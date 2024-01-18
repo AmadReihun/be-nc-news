@@ -96,6 +96,7 @@ describe("app", () => {
             expect(typeof article.body).toBe("string");
             expect(typeof article.created_at).toBe("string");
             expect(typeof article.votes).toBe("number");
+
             expect(typeof article.article_img_url).toBe("string");
           });
           // Checking the accuracy of the data for article_id 1
@@ -138,6 +139,7 @@ describe("app", () => {
     });
   });
 
+
   describe("GET /api/articles", () => {
     test("Responds with a status of 200 for the right request.", () => {
       return request(app).get("/api/articles").expect(200);
@@ -177,7 +179,52 @@ describe("app", () => {
         .get("/api/wrongpath")
         .expect(404)
     });
+
+    test("200 - can filter articles by given topic query.", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.article;
+          
+          expect(Object.keys(articles[0]).length).toBe(8);
+          
+          // Checking to have just the mitch articles after query
+          
+          articles.forEach((article) => {
+            
+          expect(article.topic).toBe("mitch");
+          });
+
+          // Checking that the articles are sorted by date in descending order
+
+            expect(body.article).toBeSortedBy('created_at', {descending: true})
+        });
+    });
+
+    test("to get error 404 and respond with appropriate message when given valid but non-existent topic", () => {
+      return request(app)
+      .get("/api/articles?topic=james")
+      .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("topic not found")
+        })
+    });
+
+    test("200 - to give an empty array when topic exists in topics but does not have any article yet e.g paper", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.article;
+          expect(articles.length).toBe(0);
+          
+        });
+    });
+
   });
+
 
   describe("GET /api/articles/:article_id/comments", () => {
     test("Responds with a status of 200 for the right request.", () => {
@@ -479,12 +526,8 @@ describe("app", () => {
   });
 
 
-
-
-
-
   describe("DELETE /api/comments/:comment_id", () => {
-    
+
     test("status code: 204 and no content message after deletion of existing comment id", () => {
       return request(app).delete('/api/comments/18').expect(204)
       .then((body) => {
