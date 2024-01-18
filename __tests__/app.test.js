@@ -85,8 +85,9 @@ describe("app", () => {
         .expect(200)
         .then(({ body }) => {
           const articles = body.article;
-          expect(Object.keys(articles[0]).length).toBe(8);
+
           expect(articles).toHaveLength(1);
+
           // Checking the data type
           articles.forEach((article) => {
             expect(typeof article.article_id).toBe("number");
@@ -598,9 +599,77 @@ describe("app", () => {
     
   });
 
+  describe("GET /api/articles/:article_id for task 12 to add the Comment Count column", () => {
+    test("Responds with a status of 200 for the right request.", () => {
+      return request(app).get("/api/articles/1").expect(200);
+    });
+    test("200 - Responds with the requested article_id to the client to include comment count.", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.article;
 
+          expect(articles).toHaveLength(1);
 
+          // Checking the data type
+          articles.forEach((article) => {
+            expect(typeof article.article_id).toBe("number");
+            expect(typeof article.title).toBe("string");
+            expect(typeof article.topic).toBe("string");
+            expect(typeof article.author).toBe("string");
+            expect(typeof article.body).toBe("string");
+            expect(typeof article.created_at).toBe("string");
+            expect(typeof article.votes).toBe("number");
+            expect(typeof article.article_img_url).toBe("string");
 
+            // to check if comment count has been included
+            expect(typeof article.comment_count).toBe("string");
 
+          });
+          // Checking the accuracy of the data for article_id 1
+          expect(articles[0].article_id).toBe(1);
+          expect(articles[0].title).toBe('Living in the shadow of a great man');
+          expect(articles[0].topic).toBe('mitch');
+          expect(articles[0].author).toBe('butter_bridge');
+          expect(articles[0].body).toBe('I find this existence challenging');
+          expect(articles[0].created_at).toBe('2020-07-09T20:11:00.000Z');
+          expect(articles[0].votes).toBe(100);
+          expect(articles[0].article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700');
+
+          // to check if comment count has been included
+          expect(articles[0].comment_count).toBe("11");
+
+        });
+          
+    });
+
+    test("to get error 404 if the path is wrong", () => {
+      return request(app)
+        .get("/api/wrongpath/1")
+        .expect(404)
+    });
+
+    test("to get error 404 and respond with appropriate message when given valid but non-existent article_id", () => {
+      return request(app)
+        .get("/api/articles/100")
+        .expect(404)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Not Found")
+        })
+    });
+
+    test("to get error 400 and respond with appropriate message when given invalid and bad type article_id", () => {
+      return request(app)
+        .get("/api/articles/apple")
+        .expect(400)
+        .then(({body}) => {
+          const message = body.msg;
+          expect(message).toBe("Bad Request")
+        })
+    });
+  });
+  
 }); 
 
