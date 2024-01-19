@@ -15,7 +15,7 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchApi = () => {
-  return fs.readFile("/home/amad7/northcoders/backend/be-nc-news/endpoints.json", "utf-8")
+  return fs.readFile(__dirname + "/../../endpoints.json", "utf-8")
   .then((fileContents) => {
     const paredEndpoint = JSON.parse(fileContents);
     return paredEndpoint;
