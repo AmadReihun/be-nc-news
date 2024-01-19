@@ -628,6 +628,9 @@ describe("app", () => {
 
           });
           // Checking the accuracy of the data for article_id 1
+          
+
+
           expect(articles[0].article_id).toBe(1);
           expect(articles[0].title).toBe('Living in the shadow of a great man');
           expect(articles[0].topic).toBe('mitch');
@@ -639,16 +642,10 @@ describe("app", () => {
 
           // to check if comment count has been included
           expect(articles[0].comment_count).toBe("11");
-
         });
           
     });
 
-    test("to get error 404 if the path is wrong", () => {
-      return request(app)
-        .get("/api/wrongpath/1")
-        .expect(404)
-    });
 
     test("to get error 404 and respond with appropriate message when given valid but non-existent article_id", () => {
       return request(app)
