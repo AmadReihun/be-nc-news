@@ -54,13 +54,6 @@ describe("app", () => {
 
           expect(typeof(body.endpoint)).toBe('object');
 
-          // // Checking the data type
-
-          for (const [key, value] of Object.entries(body.endpoint)) {
-            expect(typeof(key)).toBe('string');
-            expect(typeof(value)).toBe('object');
-          }
-
           // check if the returned body is similar to the JSON file
           
           expect(JSONendpoint).toEqual(body.endpoint)
@@ -334,7 +327,7 @@ describe("app", () => {
         .expect(201)
         .then((response) => {
           const newComment = response.body.comment;
-
+          
           expect(Object.keys(newComment).length).toBe(6)
 
           // checking the accuracy of the data
@@ -424,7 +417,7 @@ describe("app", () => {
       .send({ inc_votes: 300 })
       .expect(200)
         .then((response) => {
-
+          
           expect(Object.keys(response.body).length).toBe(1);
 
           const {updatedArticle} = response.body;
@@ -575,7 +568,7 @@ describe("app", () => {
         .get("/api/users")
         .expect(200)
         .then(({ body }) => {
-          
+
           const users = body.users;
           
           expect(users).toHaveLength(4);
