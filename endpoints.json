@@ -49,7 +49,7 @@
     "description": "serves an array of all comments related to a specific article",
     "queries": [],
     "exampleResponse": {
-      "article": [
+      "comment": [
         {
           "comment_id": 16,
           "body": "This is a bad article name",

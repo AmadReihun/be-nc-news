@@ -49,6 +49,7 @@ exports.getArticles = (req, res, next) => {
 
   Promise.all(queries)
   .then((response) => {
+    
     const article = response[0];
     res.status(200).send({ article });
   })
@@ -67,8 +68,8 @@ exports.getCommentsbyArticleId = (req, res, next) => {
 
   Promise.all([fetchQuery, articleIdExistenceQuery])
   .then((response) => {
-    const article = response[0];
-    res.status(200).send({ article });
+    const comment = response[0];
+    res.status(200).send({ comment });
   })
   .catch((err) => {
     next(err);
@@ -102,7 +103,7 @@ exports.updateArticleByArticleId = (req, res, next) => {
 
 exports.deleteCommentById = (req, res, next) => {
   const { comment_id } = req.params;
-  removeCommentById(comment_id).then((rowCount) => {
+  removeCommentById(comment_id).then(() => {
     res.status(204).send(); 
   })
   .catch((err) => {

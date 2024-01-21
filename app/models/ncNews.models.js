@@ -25,7 +25,7 @@ exports.fetchApi = () => {
 exports.fetchArticleById = (article_id) => {
   return db
     .query(
-      `SELECT articles.*, COUNT(comments.article_id) AS comment_count 
+      `SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count 
       FROM articles 
       LEFT JOIN comments ON comments.article_id = articles.article_id 
       WHERE articles.article_id = $1
@@ -43,7 +43,7 @@ exports.fetchArticleById = (article_id) => {
 exports.fetchArticles = (topic) => {
 
   let queryStr  =  `
-  SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles
+  SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id)::INT AS comment_count FROM articles
   LEFT JOIN comments ON comments.article_id = articles.article_id
   `;
 
@@ -117,7 +117,7 @@ exports.removeCommentById = (comment_id) => {
     if (rowCount === 0) {
       return Promise.reject({status: 404, msg: "Not Found"})
     }
-    return rowCount;
+    // return rowCount;
   });
 };
 
