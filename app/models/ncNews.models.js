@@ -54,7 +54,7 @@ exports.fetchArticles = (topic) => {
     queryParameters.push(topic)
   } 
   
-  queryStr += " GROUP BY articles.article_id ORDER BY created_at DESC";
+  queryStr += " GROUP BY articles.article_id ORDER BY author DESC";
   
 
     return db.query(queryStr, queryParameters).then(({rows}) => {
