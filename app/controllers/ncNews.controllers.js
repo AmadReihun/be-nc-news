@@ -46,7 +46,7 @@ exports.getArticleById = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   const { topic, sort_by } = req.query;
 
-  const fetchTopicQuery = fetchArticles((sort_by = "created_at"), topic);
+  const fetchTopicQuery = fetchArticles(sort_by, topic);
   const queries = [fetchTopicQuery];
 
   if (topic) {

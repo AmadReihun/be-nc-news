@@ -137,6 +137,7 @@ describe("GET /api/articles", () => {
       .then(({ body }) => {
         const articles = body.article;
         
+        
         // Checking the data types && not to have body property
         
         articles.forEach((article) => {
