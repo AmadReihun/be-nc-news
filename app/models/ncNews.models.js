@@ -43,7 +43,6 @@ exports.fetchArticleById = (article_id) => {
 };
 
 exports.fetchArticles = (sort_by = "created_at", topic, order_by = "DESC") => {
-
   const validSortQueries = ["created_at", "comment_count", "votes"];
 
   if (!validSortQueries.includes(sort_by)) {
@@ -53,7 +52,7 @@ exports.fetchArticles = (sort_by = "created_at", topic, order_by = "DESC") => {
   const validOrderQueries = ["DESC", "ASC"];
 
   if (!validOrderQueries.includes(order_by)) {
-    return Promise.reject({ status: 400, msg: "invalid sort_by query" });
+    return Promise.reject({ status: 400, msg: "invalid order_by query" });
   }
 
   let queryStr = `
